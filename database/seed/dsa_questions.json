@@ -1,0 +1,73 @@
+[
+  {
+    "id": "q_01_complexity",
+    "topic_id": "top_01_asymptotic_analysis",
+    "question": "What is the worst-case time complexity of binary search on a sorted array of size N?",
+    "type": "single_choice",
+    "options": [
+      "O(1)",
+      "O(log N)",
+      "O(N)",
+      "O(N log N)"
+    ],
+    "correct_answer": "O(log N)",
+    "explanation": "Binary search divides the search space in half with each comparison, yielding O(log N) iterations in the worst case."
+  },
+  {
+    "id": "q_02_two_pointer",
+    "topic_id": "top_02_arrays_strings",
+    "question": "Which algorithmic technique is optimal for finding two numbers that sum up to a target in a sorted array in O(N) time and O(1) space?",
+    "type": "single_choice",
+    "options": [
+      "Two Pointers technique",
+      "Dynamic Programming",
+      "Prefix Sums",
+      "Nested Loops"
+    ],
+    "correct_answer": "Two Pointers technique",
+    "explanation": "With one pointer at the start and one at the end of the sorted array, inward convergence finds the target sum in linear time without extra memory."
+  },
+  {
+    "id": "q_03_cycle_detection",
+    "topic_id": "top_03_linked_lists",
+    "question": "Which algorithm detects a cycle in a singly linked list using O(1) auxiliary memory?",
+    "type": "single_choice",
+    "options": [
+      "Floyd's Tortoise and Hare algorithm",
+      "Dijkstra's algorithm",
+      "Kruskal's algorithm",
+      "Tarjan's strongly connected components"
+    ],
+    "correct_answer": "Floyd's Tortoise and Hare algorithm",
+    "explanation": "Using a slow pointer advancing 1 step and a fast pointer advancing 2 steps detects cycles in O(N) time with O(1) extra space."
+  },
+  {
+    "id": "q_04_stack_monotonic",
+    "topic_id": "top_04_stacks_queues",
+    "question": "Which data structure pattern is most suitable for solving the 'Next Greater Element' problem in O(N) time?",
+    "type": "single_choice",
+    "options": [
+      "Monotonic Stack",
+      "Priority Queue",
+      "Trie",
+      "Circular Buffer"
+    ],
+    "correct_answer": "Monotonic Stack",
+    "explanation": "A monotonic stack maintains elements in sorted order to resolve the nearest greater element for each item in a single pass."
+  },
+  {
+    "id": "q_05_tree_inorder",
+    "topic_id": "top_06_trees_bst",
+    "question": "Which traversal of a valid Binary Search Tree (BST) produces nodes in non-decreasing sorted order?",
+    "type": "single_choice",
+    "options": [
+      "Inorder traversal (Left, Root, Right)",
+      "Preorder traversal (Root, Left, Right)",
+      "Postorder traversal (Left, Right, Root)",
+      "Level-order traversal (BFS)"
+    ],
+    "correct_answer": "Inorder traversal (Left, Root, Right)",
+    "explanation": "In a BST, all elements in the left subtree are smaller and all elements in the right subtree are larger than the root, so Left -> Root -> Right yields sorted values."
+  }
+]
+

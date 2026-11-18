@@ -1,0 +1,3 @@
+// Course components placeholder
+export {};
+

@@ -1,0 +1,18 @@
+{
+  "venvPath": "backend",
+  "venv": ".venv",
+  "pythonVersion": "3.14",
+  "extraPaths": [
+    "backend",
+    "backend/.venv/Lib/site-packages"
+  ],
+  "include": [
+    "backend/app",
+    "database/migrations"
+  ],
+  "exclude": [
+    "backend/.venv",
+    "frontend",
+    "**/__pycache__"
+  ]
+}

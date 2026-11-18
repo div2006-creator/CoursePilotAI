@@ -1,0 +1,93 @@
+[
+  {
+    "id": "top_01_asymptotic_analysis",
+    "name": "Asymptotic Analysis & Big-O Notation",
+    "category": "Foundations",
+    "difficulty": "Beginner",
+    "description": "Understanding time and space complexity, Big-O, Big-Omega, Big-Theta notation, and common complexity classes.",
+    "prerequisites": [],
+    "order": 1
+  },
+  {
+    "id": "top_02_arrays_strings",
+    "name": "Arrays & Strings",
+    "category": "Linear Data Structures",
+    "difficulty": "Beginner",
+    "description": "Memory layout of arrays, dynamic arrays, two-pointer techniques, sliding window patterns, and string manipulation.",
+    "prerequisites": ["top_01_asymptotic_analysis"],
+    "order": 2
+  },
+  {
+    "id": "top_03_linked_lists",
+    "name": "Linked Lists",
+    "category": "Linear Data Structures",
+    "difficulty": "Beginner",
+    "description": "Singly and doubly linked lists, cycle detection (Floyd's algorithm), reversals, and list-based implementations.",
+    "prerequisites": ["top_01_asymptotic_analysis"],
+    "order": 3
+  },
+  {
+    "id": "top_04_stacks_queues",
+    "name": "Stacks & Queues",
+    "category": "Linear Data Structures",
+    "difficulty": "Beginner",
+    "description": "LIFO and FIFO operations, monotonic stacks, deque, and applications such as parenthesis matching and expression evaluation.",
+    "prerequisites": ["top_02_arrays_strings", "top_03_linked_lists"],
+    "order": 4
+  },
+  {
+    "id": "top_05_recursion_backtracking",
+    "name": "Recursion & Backtracking",
+    "category": "Algorithmic Paradigms",
+    "difficulty": "Intermediate",
+    "description": "Base cases, call stack mechanics, recursion tree analysis, and exhaustive search problems (N-Queens, subsets, permutations).",
+    "prerequisites": ["top_01_asymptotic_analysis", "top_04_stacks_queues"],
+    "order": 5
+  },
+  {
+    "id": "top_06_trees_bst",
+    "name": "Binary Trees & Binary Search Trees",
+    "category": "Hierarchical Data Structures",
+    "difficulty": "Intermediate",
+    "description": "Tree traversals (inorder, preorder, postorder, level-order), BST invariants, balanced trees concept, and lowest common ancestor.",
+    "prerequisites": ["top_04_stacks_queues", "top_05_recursion_backtracking"],
+    "order": 6
+  },
+  {
+    "id": "top_07_heaps_priority_queues",
+    "name": "Heaps & Priority Queues",
+    "category": "Hierarchical Data Structures",
+    "difficulty": "Intermediate",
+    "description": "Binary heaps, heapify operation, priority queue operations, and applications such as Top-K elements and median maintenance.",
+    "prerequisites": ["top_02_arrays_strings", "top_06_trees_bst"],
+    "order": 7
+  },
+  {
+    "id": "top_08_graphs",
+    "name": "Graphs & Traversals",
+    "category": "Non-Linear Data Structures",
+    "difficulty": "Intermediate",
+    "description": "Adjacency matrix vs list, Breadth-First Search (BFS), Depth-First Search (DFS), topological sorting, and cycle detection in DAGs.",
+    "prerequisites": ["top_04_stacks_queues", "top_05_recursion_backtracking"],
+    "order": 8
+  },
+  {
+    "id": "top_09_graph_algorithms",
+    "name": "Shortest Paths & Minimum Spanning Trees",
+    "category": "Graph Algorithms",
+    "difficulty": "Advanced",
+    "description": "Dijkstra's algorithm, Bellman-Ford algorithm, Prim's and Kruskal's MST algorithms, Disjoint Set Union (DSU).",
+    "prerequisites": ["top_07_heaps_priority_queues", "top_08_graphs"],
+    "order": 9
+  },
+  {
+    "id": "top_10_dynamic_programming",
+    "name": "Dynamic Programming",
+    "category": "Advanced Paradigms",
+    "difficulty": "Advanced",
+    "description": "Optimal substructure, overlapping subproblems, memoization vs tabulation, knapsack patterns, and state-transition modeling.",
+    "prerequisites": ["top_05_recursion_backtracking"],
+    "order": 10
+  }
+]
+
