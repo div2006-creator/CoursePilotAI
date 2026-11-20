@@ -11,6 +11,7 @@ from app.core.database import Base, utc_now
 
 if TYPE_CHECKING:
     from app.models.attempt import Attempt
+    from app.models.diagnostic_session import DiagnosticSession
     from app.models.document import Document
     from app.models.study_plan import StudyPlan
     from app.models.topic import Topic
@@ -74,6 +75,12 @@ class Course(Base):
     )
     study_plans: Mapped[list[StudyPlan]] = relationship(
         "StudyPlan",
+        back_populates="course",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    diagnostic_sessions: Mapped[list[DiagnosticSession]] = relationship(
+        "DiagnosticSession",
         back_populates="course",
         cascade="all, delete-orphan",
         passive_deletes=True,

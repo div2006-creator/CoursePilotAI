@@ -1,10 +1,19 @@
 from __future__ import annotations
 
 from collections import defaultdict, deque
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, Optional
 import uuid
 
-from sqlalchemy import CheckConstraint, ForeignKey, Index, Uuid, event, select
+from sqlalchemy import (
+    CheckConstraint,
+    Float,
+    ForeignKey,
+    Index,
+    Text,
+    Uuid,
+    event,
+    select,
+)
 from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
 
 from app.core.database import Base
@@ -26,6 +35,10 @@ class TopicPrerequisite(Base):
             "topic_id <> prerequisite_id",
             name="no_self_prerequisite",
         ),
+        CheckConstraint(
+            "confidence >= 0.0 AND confidence <= 1.0",
+            name="ck_topic_prerequisites_confidence_range",
+        ),
         Index("ix_topic_prerequisites_prerequisite_id", "prerequisite_id"),
     )
 
@@ -38,6 +51,16 @@ class TopicPrerequisite(Base):
         Uuid(as_uuid=True),
         ForeignKey("topics.id", ondelete="CASCADE"),
         primary_key=True,
+    )
+    confidence: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+        default=1.0,
+        server_default="1.0",
+    )
+    reason: Mapped[Optional[str]] = mapped_column(
+        Text,
+        nullable=True,
     )
 
     # Relationships
@@ -55,7 +78,7 @@ class TopicPrerequisite(Base):
     def __repr__(self) -> str:
         return (
             f"<TopicPrerequisite topic_id={self.topic_id} "
-            f"prerequisite_id={self.prerequisite_id}>"
+            f"prerequisite_id={self.prerequisite_id} confidence={self.confidence}>"
         )
 
 
@@ -170,4 +193,3 @@ def _prevent_circular_prerequisites(
                 f"prerequisite {p_key}."
             )
         adjacency[t_key].add(p_key)
-

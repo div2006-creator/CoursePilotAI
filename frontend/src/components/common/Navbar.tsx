@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import {
   Compass,
   LayoutDashboard,
@@ -16,7 +16,7 @@ export const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
   const navItems = [
-    { to: '/', label: 'Dashboard', icon: LayoutDashboard },
+    { to: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { to: '/courses', label: 'Courses', icon: BookOpen },
     { to: '/tutor', label: 'AI Tutor', icon: BotMessageSquare },
     { to: '/study-plan', label: 'Study Plan', icon: CalendarCheck },
@@ -29,10 +29,10 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-50">
+    <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex items-center space-x-3">
+          <Link to="/dashboard" className="flex items-center space-x-3">
             <div className="w-10 h-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-md">
               <Compass className="w-6 h-6" />
             </div>
@@ -42,7 +42,7 @@ export const Navbar: React.FC = () => {
                 AI
               </span>
             </div>
-          </div>
+          </Link>
 
           <div className="flex items-center space-x-2 sm:space-x-4">
             <nav className="flex space-x-1 sm:space-x-2">
@@ -52,7 +52,7 @@ export const Navbar: React.FC = () => {
                   <NavLink
                     key={item.to}
                     to={item.to}
-                    end={item.to === '/'}
+                    end={item.to === '/dashboard'}
                     className={({ isActive }) =>
                       `flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                         isActive

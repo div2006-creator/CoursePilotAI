@@ -16,7 +16,7 @@ export const Login: React.FC = () => {
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const fromPath = (location.state as LocationState | null)?.from?.pathname || '/';
+  const fromPath = (location.state as LocationState | null)?.from?.pathname || '/dashboard';
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');

@@ -1,3 +1,3 @@
-// Course components placeholder
-export {};
-
+export { CourseCard } from './CourseCard';
+export { CourseFormModal } from './CourseFormModal';
+export { DeleteCourseModal } from './DeleteCourseModal';

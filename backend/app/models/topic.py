@@ -1,12 +1,25 @@
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Optional
+from datetime import datetime
+from typing import TYPE_CHECKING, Any, Optional
 import uuid
 
-from sqlalchemy import CheckConstraint, ForeignKey, Index, String, Text, Uuid
+from sqlalchemy import (
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Index,
+    JSON,
+    String,
+    Text,
+    UniqueConstraint,
+    Uuid,
+    func,
+)
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database import Base
+from app.core.database import Base, utc_now
 
 if TYPE_CHECKING:
     from app.models.attempt import Attempt
@@ -23,8 +36,10 @@ class Topic(Base):
     __tablename__ = "topics"
     __table_args__ = (
         CheckConstraint("parent_id IS NULL OR parent_id <> id", name="no_self_parent"),
+        UniqueConstraint("course_id", "name", "parent_id", name="uq_topics_course_name_parent"),
         Index("ix_topics_course_name", "course_id", "name"),
         Index("ix_topics_course_difficulty", "course_id", "difficulty"),
+        Index("ix_topics_course_unit", "course_id", "unit_name"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -52,6 +67,27 @@ class Topic(Base):
         ForeignKey("topics.id", ondelete="SET NULL"),
         index=True,
         nullable=True,
+    )
+    unit_name: Mapped[Optional[str]] = mapped_column(
+        String(100),
+        nullable=True,
+        index=True,
+    )
+    source_type: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        default="explicit",
+        server_default="explicit",
+    )
+    source_pages: Mapped[Optional[Any]] = mapped_column(
+        JSON().with_variant(postgresql.JSONB, "postgresql"),
+        nullable=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utc_now,
+        server_default=func.current_timestamp(),
+        nullable=False,
     )
 
     # Relationships
@@ -124,5 +160,4 @@ class Topic(Base):
     )
 
     def __repr__(self) -> str:
-        return f"<Topic id={self.id} name={self.name!r}>"
-
+        return f"<Topic id={self.id} name={self.name!r} unit={self.unit_name!r}>"

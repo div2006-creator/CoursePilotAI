@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from app.models.agent_run import AgentRun
     from app.models.attempt import Attempt
     from app.models.course import Course
+    from app.models.diagnostic_session import DiagnosticSession
     from app.models.study_plan import StudyPlan
     from app.models.topic_mastery import TopicMastery
 
@@ -69,6 +70,12 @@ class User(Base):
     )
     agent_runs: Mapped[list[AgentRun]] = relationship(
         "AgentRun",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    diagnostic_sessions: Mapped[list[DiagnosticSession]] = relationship(
+        "DiagnosticSession",
         back_populates="user",
         cascade="all, delete-orphan",
         passive_deletes=True,

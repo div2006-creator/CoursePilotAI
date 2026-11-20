@@ -24,7 +24,16 @@ class DocumentChunk(Base):
             "page_number IS NULL OR page_number >= 1",
             name="page_number_positive",
         ),
+        CheckConstraint(
+            "end_page_number IS NULL OR end_page_number >= 1",
+            name="end_page_number_positive",
+        ),
+        CheckConstraint(
+            "chunk_index >= 0",
+            name="chunk_index_non_negative",
+        ),
         Index("ix_document_chunks_doc_page", "document_id", "page_number"),
+        Index("ix_document_chunks_doc_chunk_idx", "document_id", "chunk_index"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -38,8 +47,16 @@ class DocumentChunk(Base):
         index=True,
         nullable=False,
     )
+    chunk_index: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=0,
+        server_default="0",
+    )
     content: Mapped[str] = mapped_column(Text, nullable=False)
     page_number: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    end_page_number: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
+    token_count: Mapped[Optional[int]] = mapped_column(Integer, nullable=True)
     embedding: Mapped[Optional[list[float]]] = mapped_column(
         Vector(EMBEDDING_DIMENSIONS),
         nullable=True,
@@ -49,5 +66,7 @@ class DocumentChunk(Base):
     document: Mapped[Document] = relationship("Document", back_populates="chunks")
 
     def __repr__(self) -> str:
-        return f"<DocumentChunk id={self.id} document_id={self.document_id} page={self.page_number}>"
-
+        return (
+            f"<DocumentChunk id={self.id} document_id={self.document_id} "
+            f"chunk_index={self.chunk_index} page={self.page_number}>"
+        )

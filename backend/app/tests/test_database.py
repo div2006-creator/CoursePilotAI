@@ -44,6 +44,8 @@ EXPECTED_TABLES = {
     "study_plans",
     "plan_items",
     "agent_runs",
+    "diagnostic_sessions",
+    "diagnostic_session_questions",
 }
 
 

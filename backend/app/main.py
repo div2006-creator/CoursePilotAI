@@ -7,6 +7,9 @@ from fastapi.responses import JSONResponse
 
 from app.api.routes import api_router
 from app.api.routes import auth as auth_routes
+from app.api.routes import courses as course_routes
+from app.api.routes import diagnostic as diagnostic_routes
+from app.api.routes import topics as topic_routes
 from app.config import settings
 
 
@@ -76,6 +79,21 @@ app.include_router(
     auth_routes.router,
     prefix=f"{settings.API_V1_STR}/auth",
     tags=["auth"],
+)
+app.include_router(
+    course_routes.router,
+    prefix=f"{settings.API_V1_STR}/courses",
+    tags=["courses"],
+)
+app.include_router(
+    topic_routes.router,
+    prefix=settings.API_V1_STR,
+    tags=["topics"],
+)
+app.include_router(
+    diagnostic_routes.router,
+    prefix=settings.API_V1_STR,
+    tags=["diagnostic"],
 )
 
 

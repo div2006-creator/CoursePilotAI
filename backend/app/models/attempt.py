@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 import uuid
 
 from sqlalchemy import Boolean, CheckConstraint, DateTime, ForeignKey, Index, Integer, Text, Uuid, func
@@ -11,6 +11,7 @@ from app.core.database import Base, utc_now
 
 if TYPE_CHECKING:
     from app.models.course import Course
+    from app.models.diagnostic_session import DiagnosticSession
     from app.models.question import Question
     from app.models.topic import Topic
     from app.models.user import User
@@ -24,6 +25,7 @@ class Attempt(Base):
         CheckConstraint("time_taken >= 0", name="time_taken_non_negative"),
         Index("ix_attempts_user_course", "user_id", "course_id"),
         Index("ix_attempts_user_topic", "user_id", "topic_id"),
+        Index("ix_attempts_diagnostic_session", "diagnostic_session_id"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -55,6 +57,12 @@ class Attempt(Base):
         index=True,
         nullable=False,
     )
+    diagnostic_session_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("diagnostic_sessions.id", ondelete="SET NULL"),
+        index=True,
+        nullable=True,
+    )
     selected_answer: Mapped[str] = mapped_column(Text, nullable=False)
     is_correct: Mapped[bool] = mapped_column(Boolean, nullable=False, index=True)
     time_taken: Mapped[int] = mapped_column(
@@ -76,6 +84,10 @@ class Attempt(Base):
     course: Mapped[Course] = relationship("Course", back_populates="attempts")
     topic: Mapped[Topic] = relationship("Topic", back_populates="attempts")
     question: Mapped[Question] = relationship("Question", back_populates="attempts")
+    diagnostic_session: Mapped[Optional[DiagnosticSession]] = relationship(
+        "DiagnosticSession",
+        back_populates="attempts",
+    )
 
     def __repr__(self) -> str:
         return (

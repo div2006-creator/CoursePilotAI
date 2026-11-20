@@ -8,7 +8,8 @@ from app.core.database import Base
 from app.models.agent_run import AgentRun
 from app.models.attempt import Attempt
 from app.models.course import Course
-from app.models.document import Document
+from app.models.diagnostic_session import DiagnosticSession, DiagnosticSessionQuestion
+from app.models.document import Document, DocumentStatus
 from app.models.document_chunk import DocumentChunk
 from app.models.plan_item import PlanItem
 from app.models.question import Question
@@ -27,6 +28,7 @@ __all__ = [
     "User",
     "Course",
     "Document",
+    "DocumentStatus",
     "DocumentChunk",
     "Topic",
     "TopicPrerequisite",
@@ -38,4 +40,6 @@ __all__ = [
     "StudyPlan",
     "PlanItem",
     "AgentRun",
+    "DiagnosticSession",
+    "DiagnosticSessionQuestion",
 ]

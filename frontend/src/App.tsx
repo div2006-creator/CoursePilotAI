@@ -1,10 +1,21 @@
 import React from 'react';
-import { BrowserRouter as Router, Outlet, Route, Routes } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+} from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { Navbar } from './components/common/Navbar';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
-import { DashboardPage } from './pages/DashboardPage';
-import { CoursesPage } from './pages/CoursesPage';
+import { Dashboard } from './pages/Dashboard';
+import { Courses } from './pages/Courses';
+import { CourseDetails } from './pages/CourseDetails';
+import { Diagnostic } from './pages/Diagnostic';
+import { DiagnosticResult } from './pages/DiagnosticResult';
+import { Topics } from './pages/Topics';
+import { KnowledgeGraph } from './pages/KnowledgeGraph';
 import { TutorPage } from './pages/TutorPage';
 import { StudyPlanPage } from './pages/StudyPlanPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
@@ -35,8 +46,14 @@ export const App: React.FC = () => {
           <Route path="/register" element={<Register />} />
 
           <Route element={<AuthenticatedLayout />}>
-            <Route path="/" element={<DashboardPage />} />
-            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/" element={<Navigate to="/dashboard" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/courses" element={<Courses />} />
+            <Route path="/courses/:courseId" element={<CourseDetails />} />
+            <Route path="/courses/:courseId/diagnostic" element={<Diagnostic />} />
+            <Route path="/courses/:courseId/diagnostic/:sessionId/result" element={<DiagnosticResult />} />
+            <Route path="/courses/:courseId/topics" element={<Topics />} />
+            <Route path="/courses/:courseId/graph" element={<KnowledgeGraph />} />
             <Route path="/tutor" element={<TutorPage />} />
             <Route path="/study-plan" element={<StudyPlanPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />

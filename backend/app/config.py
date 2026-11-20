@@ -91,12 +91,28 @@ class Settings(BaseSettings):
 
     # AI & LLM Services (Ollama & Local Embeddings)
     OLLAMA_BASE_URL: str = "http://localhost:11434"
-    OLLAMA_MODEL: str = "qwen2.5-coder:7b"
+    OLLAMA_MODEL: str = "qwen2.5:3b"
+    OLLAMA_TIMEOUT_SECONDS: int = 90
     EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     # Document Uploads & Storage
     UPLOAD_DIR: str = "./uploads"
-    MAX_UPLOAD_SIZE_BYTES: int = 10 * 1024 * 1024  # 10 MB
+    MAX_UPLOAD_SIZE_MB: int = 20
+    MAX_PDF_PAGES: int = 200
+    MAX_UPLOAD_SIZE_BYTES: int | None = None
+
+    @property
+    def max_upload_size_bytes(self) -> int:
+        if self.MAX_UPLOAD_SIZE_BYTES is not None and self.MAX_UPLOAD_SIZE_BYTES > 0:
+            return self.MAX_UPLOAD_SIZE_BYTES
+        return self.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+
+    @property
+    def upload_dir_path(self) -> Path:
+        raw = Path(self.UPLOAD_DIR)
+        if raw.is_absolute():
+            return raw.resolve()
+        return (PROJECT_ROOT / raw).resolve()
 
     model_config = SettingsConfigDict(
         env_file=(str(PROJECT_ROOT / ".env"), str(BACKEND_DIR / ".env")),

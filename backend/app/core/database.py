@@ -3,13 +3,34 @@ from datetime import datetime, timezone
 import logging
 from typing import Generator
 
-from sqlalchemy import Engine, MetaData, create_engine, text
+from pgvector.sqlalchemy import Vector
+from sqlalchemy import Engine, MetaData, create_engine, event, text
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.exc import OperationalError, SQLAlchemyError
+from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.config import settings
 
 logger = logging.getLogger(__name__)
+
+
+# Allow PostgreSQL-specific column types (JSONB, pgvector) to compile cleanly
+# when running locally against SQLite (e.g., dev fallback or isolated tests).
+@compiles(JSONB, "sqlite")
+def _compile_jsonb_sqlite(element, compiler, **kw) -> str:
+    return "JSON"
+
+
+@compiles(Vector, "sqlite")
+def _compile_vector_sqlite(element, compiler, **kw) -> str:
+    return "TEXT"
+
+
+def _enable_sqlite_foreign_keys(dbapi_connection, _connection_record) -> None:
+    cursor = dbapi_connection.cursor()
+    cursor.execute("PRAGMA foreign_keys=ON")
+    cursor.close()
 
 # Deterministic naming convention for constraints and indexes (Alembic best practice)
 NAMING_CONVENTION: dict[str, str] = {
@@ -43,7 +64,9 @@ def create_db_engine(database_url: str | None = None, *, echo: bool = False) -> 
         "pool_pre_ping": True,
         "echo": echo,
     }
-    if not url.startswith("sqlite"):
+    if url.startswith("sqlite"):
+        engine_kwargs["connect_args"] = {"check_same_thread": False}
+    else:
         engine_kwargs.update(
             {
                 "pool_size": 5,
@@ -51,7 +74,10 @@ def create_db_engine(database_url: str | None = None, *, echo: bool = False) -> 
                 "pool_recycle": 1800,
             }
         )
-    return create_engine(url, **engine_kwargs)
+    created_engine = create_engine(url, **engine_kwargs)
+    if created_engine.dialect.name == "sqlite":
+        event.listen(created_engine, "connect", _enable_sqlite_foreign_keys)
+    return created_engine
 
 
 # Primary database engine configured from DATABASE_URL / environment settings

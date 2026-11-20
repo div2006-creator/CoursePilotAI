@@ -26,7 +26,7 @@ export const Register: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!authLoading && isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
 
   const validate = (): boolean => {
@@ -79,7 +79,7 @@ export const Register: React.FC = () => {
         email: email.trim(),
         password,
       });
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       setServerError(
         extractApiErrorMessage(error, 'Unable to create your account. Please try again.')

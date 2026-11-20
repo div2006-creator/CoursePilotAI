@@ -83,6 +83,11 @@ sentence_transformers/
 frontend/vite.config.js
 frontend/vite.config.d.ts
 
+# Local development SQLite databases
+*.db
+*.sqlite
+*.sqlite3
+
 # IDE & Editor files
 .vscode/
 .idea/
