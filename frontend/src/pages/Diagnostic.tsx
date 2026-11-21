@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
+import { useNavigate, useParams, useLocation, Link } from 'react-router-dom';
 import {
   ArrowLeft,
   BrainCircuit,
@@ -29,6 +29,7 @@ import { extractApiErrorMessage } from '../services/api';
 export const Diagnostic: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Course & Topic State
   const [course, setCourse] = useState<Course | null>(null);
@@ -44,7 +45,12 @@ export const Diagnostic: React.FC = () => {
   const [isStarting, setIsStarting] = useState(false);
 
   // Active Assessment State
-  const [sessionData, setSessionData] = useState<DiagnosticQuestionsData | null>(null);
+  const [sessionData, setSessionData] = useState<DiagnosticQuestionsData | null>(() => {
+    if (location.state && (location.state as any).sessionData) {
+      return (location.state as any).sessionData as DiagnosticQuestionsData;
+    }
+    return null;
+  });
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [timePerQuestion, setTimePerQuestion] = useState<Record<string, number>>({});

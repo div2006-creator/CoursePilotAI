@@ -13,6 +13,7 @@ if TYPE_CHECKING:
     from app.models.attempt import Attempt
     from app.models.diagnostic_session import DiagnosticSession
     from app.models.document import Document
+    from app.models.knowledge_gap import KnowledgeGapAnalysis
     from app.models.study_plan import StudyPlan
     from app.models.topic import Topic
     from app.models.user import User
@@ -81,6 +82,12 @@ class Course(Base):
     )
     diagnostic_sessions: Mapped[list[DiagnosticSession]] = relationship(
         "DiagnosticSession",
+        back_populates="course",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    knowledge_gap_analyses: Mapped[list[KnowledgeGapAnalysis]] = relationship(
+        "KnowledgeGapAnalysis",
         back_populates="course",
         cascade="all, delete-orphan",
         passive_deletes=True,

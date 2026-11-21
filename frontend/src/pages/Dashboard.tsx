@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowRight,
   BookOpen,
+  BrainCircuit,
   Calendar,
   CheckCircle2,
   Clock,
@@ -26,6 +27,7 @@ import { CourseFormModal } from '../components/course';
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
@@ -281,7 +283,7 @@ export const Dashboard: React.FC = () => {
                             </p>
                           </div>
 
-                          <div className="flex items-center space-x-4 text-xs text-gray-500 flex-shrink-0">
+                          <div className="flex items-center space-x-3 text-xs text-gray-500 flex-shrink-0">
                             <span className="inline-flex items-center space-x-1">
                               <Clock className="w-3.5 h-3.5 text-gray-400" />
                               <span>{formatStudyMinutes(course.daily_minutes)}/day</span>
@@ -290,6 +292,19 @@ export const Dashboard: React.FC = () => {
                               <Calendar className="w-3.5 h-3.5 text-gray-400" />
                               <span>{formatCalendarDate(course.exam_date)}</span>
                             </span>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                navigate(`/courses/${course.id}/knowledge-gaps`);
+                              }}
+                              className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[11px] font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors"
+                              title="Inspect Knowledge Gaps & Prerequisite Analysis"
+                            >
+                              <BrainCircuit className="w-3 h-3 text-indigo-600" />
+                              <span>Gaps</span>
+                            </button>
                           </div>
                         </Link>
                       </li>

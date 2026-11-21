@@ -23,8 +23,15 @@ Covers:
 from __future__ import annotations
 
 import json
+from pathlib import Path
+import sys
 from typing import Generator
 import uuid
+
+# Ensure `backend` directory is in sys.path so `app.*` imports resolve in all environments
+_BACKEND_DIR = Path(__file__).resolve().parents[2]
+if str(_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_DIR))
 
 from fastapi.testclient import TestClient
 import pytest
@@ -35,21 +42,16 @@ from app.core.security import create_access_token
 from app.main import app as fastapi_app
 from app.models.attempt import Attempt
 from app.models.course import Course
-from app.models.diagnostic_session import DiagnosticSession
 from app.models.question import Question
 from app.models.topic import Topic
 from app.models.user import User
-from app.schemas.diagnostic import DiagnosticStartRequest, DiagnosticSubmitRequest
+from app.schemas.diagnostic import DiagnosticStartRequest
 from app.services.assessment_analytics_service import (
-    calculate_difficulty_breakdown,
     calculate_diagnostic_score,
     calculate_topic_wise_accuracy,
     classify_accuracy_status,
 )
-from app.services.diagnostic_service import (
-    start_diagnostic_session,
-    submit_diagnostic,
-)
+from app.services.diagnostic_service import start_diagnostic_session
 from app.services.question_generation_service import (
     InvalidQuestionDataError,
     parse_and_validate_questions_json,
@@ -108,7 +110,7 @@ def _create_question(
     session: Session,
     topic: Topic,
     question_text: str = "What is the time complexity of array lookup by index?",
-    options: list[str] = None,
+    options: list[str] | None = None,
     correct_answer: str = "O(1)",
     difficulty: str = "easy",
 ) -> Question:
@@ -136,7 +138,7 @@ def _auth_headers(user: User) -> dict[str, str]:
 @pytest.fixture(autouse=True)
 def mock_default_llm_generator(monkeypatch):
     """Automatically mock LLM generation so tests run offline without Ollama."""
-    def _mock_gen(prompt: str, system: str = None, response_format: str = "json", temperature: float = 0.1, **kwargs):
+    def _mock_gen(prompt: str, system: str | None = None, response_format: str = "json", temperature: float = 0.1, **kwargs):
         import re
         topic_match = re.search(r"Topic ID:\s*([0-9a-fA-F-]+)", prompt)
         topic_id = topic_match.group(1) if topic_match else str(uuid.uuid4())
@@ -770,3 +772,8 @@ def test_openapi_exposes_diagnostic_endpoints(client: TestClient):
 
     for endpoint in expected_endpoints:
         assert endpoint in paths, f"Expected endpoint {endpoint} not registered in OpenAPI schema."
+
+
+if __name__ == "__main__":
+    import pytest
+    sys.exit(pytest.main([__file__, "-v"]))

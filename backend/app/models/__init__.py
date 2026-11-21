@@ -11,6 +11,7 @@ from app.models.course import Course
 from app.models.diagnostic_session import DiagnosticSession, DiagnosticSessionQuestion
 from app.models.document import Document, DocumentStatus
 from app.models.document_chunk import DocumentChunk
+from app.models.knowledge_gap import KnowledgeGap, KnowledgeGapAnalysis
 from app.models.plan_item import PlanItem
 from app.models.question import Question
 from app.models.study_plan import StudyPlan
@@ -42,4 +43,6 @@ __all__ = [
     "AgentRun",
     "DiagnosticSession",
     "DiagnosticSessionQuestion",
+    "KnowledgeGapAnalysis",
+    "KnowledgeGap",
 ]

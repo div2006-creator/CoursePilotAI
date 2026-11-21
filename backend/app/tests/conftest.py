@@ -1,7 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
+import sys
 from typing import Generator
+
+# Ensure `backend` directory is in sys.path so `app.*` imports resolve in all environments
+_BACKEND_DIR = Path(__file__).resolve().parents[2]
+if str(_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_DIR))
 
 from alembic import command
 from alembic.config import Config as AlembicConfig

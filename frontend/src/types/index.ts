@@ -275,4 +275,86 @@ export interface DiagnosticHistoryItem {
   completed_at: string | null;
 }
 
+export interface TopicPerformanceMetric {
+  topic_id: string;
+  topic_name: string;
+  total_attempts: number;
+  correct_attempts: number;
+  accuracy_percentage: number;
+  knowledge_status: 'strong' | 'developing' | 'weak' | 'not_assessed';
+  confidence_score: number;
+  last_attempted_at: string | null;
+  unit_name?: string | null;
+}
+
+export interface PrerequisiteNode {
+  topic_id: string;
+  topic_name: string;
+  knowledge_status: string;
+  accuracy_percentage: number;
+  depth: number;
+  is_direct: boolean;
+}
+
+export type KnowledgeGapType =
+  | 'direct_weakness'
+  | 'foundational_weakness'
+  | 'potential_knowledge_gap'
+  | 'isolated_difficulty';
+
+export interface KnowledgeGapDetail {
+  id?: string | null;
+  topic_id: string;
+  topic_name: string;
+  gap_type: KnowledgeGapType;
+  severity: number;
+  confidence: number;
+  accuracy_percentage: number;
+  attempt_count: number;
+  evidence: Record<string, any>;
+  recommendation?: string | null;
+  prerequisite_chain: PrerequisiteNode[];
+}
+
+export interface GapRecommendationItem {
+  priority: number;
+  topic_id: string;
+  topic_name: string;
+  action_type: 'revise_prerequisite' | 'practice_topic' | 'take_diagnostic';
+  reason: string;
+  severity: number;
+}
+
+export interface KnowledgeGapAnalysisData {
+  analysis_id: string;
+  course_id: string;
+  diagnostic_session_id?: string | null;
+  status: string;
+  overall_gap_score: number;
+  created_at: string;
+  summary: string;
+  total_topics: number;
+  assessed_topics: number;
+  strong_topics_count: number;
+  developing_topics_count: number;
+  weak_topics_count: number;
+  unassessed_topics_count: number;
+  topic_performances: TopicPerformanceMetric[];
+  gaps: KnowledgeGapDetail[];
+  recommendations: GapRecommendationItem[];
+}
+
+export interface KnowledgeGapHistoryItem {
+  analysis_id: string;
+  course_id: string;
+  overall_gap_score: number;
+  weak_topics_count: number;
+  created_at: string;
+}
+
+export interface ReassessPayload {
+  difficulty?: 'easy' | 'medium' | 'hard' | 'mixed';
+  questions_per_topic?: number;
+}
+
 

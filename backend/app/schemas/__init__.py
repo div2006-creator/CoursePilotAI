@@ -34,6 +34,19 @@ from app.schemas.diagnostic import (
     TopicAccuracyItem,
 )
 from app.schemas.health import HealthCheckResponse
+from app.schemas.knowledge_gap import (
+    GapRecommendationItem,
+    KnowledgeGapAnalysisResponse,
+    KnowledgeGapAnalysisResponseData,
+    KnowledgeGapDetail,
+    KnowledgeGapHistoryItem,
+    KnowledgeGapHistoryResponse,
+    PrerequisiteNode,
+    ReassessRequest,
+    RecommendationsResponse,
+    TopicKnowledgeGapResponse,
+    TopicPerformanceMetric,
+)
 from app.schemas.topic import (
     CourseTopicsData,
     CourseTopicsResponse,
@@ -99,4 +112,15 @@ __all__ = [
     "DiagnosticResultResponse",
     "DiagnosticHistoryItem",
     "DiagnosticHistoryResponse",
+    "TopicPerformanceMetric",
+    "PrerequisiteNode",
+    "KnowledgeGapDetail",
+    "GapRecommendationItem",
+    "KnowledgeGapAnalysisResponseData",
+    "KnowledgeGapAnalysisResponse",
+    "KnowledgeGapHistoryItem",
+    "KnowledgeGapHistoryResponse",
+    "TopicKnowledgeGapResponse",
+    "RecommendationsResponse",
+    "ReassessRequest",
 ]

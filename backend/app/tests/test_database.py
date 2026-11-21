@@ -3,7 +3,13 @@ from __future__ import annotations
 from datetime import date, datetime, timezone
 import io
 from pathlib import Path
+import sys
 import uuid
+
+# Ensure `backend` directory is in sys.path so `app.*` imports resolve in all environments
+_BACKEND_DIR = Path(__file__).resolve().parents[2]
+if str(_BACKEND_DIR) not in sys.path:
+    sys.path.insert(0, str(_BACKEND_DIR))
 
 from alembic import command
 from alembic.autogenerate import compare_metadata
@@ -21,6 +27,8 @@ from app.models import (
     Course,
     Document,
     DocumentChunk,
+    KnowledgeGap,
+    KnowledgeGapAnalysis,
     PlanItem,
     Question,
     StudyPlan,
@@ -46,6 +54,8 @@ EXPECTED_TABLES = {
     "agent_runs",
     "diagnostic_sessions",
     "diagnostic_session_questions",
+    "knowledge_gap_analyses",
+    "knowledge_gaps",
 }
 
 
@@ -264,7 +274,25 @@ def test_full_relational_model_graph(db_session: Session) -> None:
         input_data={"course_id": str(course.id)},
         output_data={"items_created": 1},
     )
-    db_session.add_all([plan_item, agent_run])
+    gap_analysis = KnowledgeGapAnalysis(
+        user_id=user.id,
+        course_id=course.id,
+        status="completed",
+        overall_gap_score=25.0,
+        analysis_data={"summary": "Foundational review needed"},
+    )
+    db_session.add_all([plan_item, agent_run, gap_analysis])
+    db_session.flush()
+
+    gap = KnowledgeGap(
+        analysis_id=gap_analysis.id,
+        topic_id=child_topic.id,
+        gap_type="direct_weakness",
+        severity=40.0,
+        confidence=0.8,
+        evidence={"accuracy": 40.0},
+    )
+    db_session.add(gap)
     db_session.flush()
 
     # Verify bidirectional ORM relationships
@@ -274,13 +302,17 @@ def test_full_relational_model_graph(db_session: Session) -> None:
     db_session.refresh(parent_topic)
     db_session.refresh(child_topic)
     db_session.refresh(plan)
+    db_session.refresh(gap_analysis)
 
     assert len(user.courses) == 1
     assert len(user.attempts) == 1
     assert len(user.study_plans) == 1
     assert len(user.agent_runs) == 1
+    assert len(user.knowledge_gap_analyses) == 1
     assert len(course.documents) == 1
     assert len(course.topics) == 2
+    assert len(course.knowledge_gap_analyses) == 1
+    assert len(gap_analysis.gaps) == 1
     assert len(doc.chunks) == 1
     assert len(doc.chunks[0].embedding) == 384
     assert child_topic.parent.id == parent_topic.id
@@ -472,10 +504,27 @@ def test_cascading_deletes_remove_child_records(db_session: Session) -> None:
         scheduled_date=date(2026, 11, 21),
         duration_minutes=30,
     )
-    db_session.add(item)
+    gap_analysis = KnowledgeGapAnalysis(
+        user_id=user.id,
+        course_id=course.id,
+        status="completed",
+        overall_gap_score=10.0,
+        analysis_data={},
+    )
+    db_session.add_all([item, gap_analysis])
     db_session.flush()
 
-    # Deleting the course should cascade across documents, chunks, topics, prerequisites, plans, items
+    gap = KnowledgeGap(
+        analysis_id=gap_analysis.id,
+        topic_id=t1.id,
+        gap_type="isolated_difficulty",
+        severity=30.0,
+        confidence=0.9,
+    )
+    db_session.add(gap)
+    db_session.flush()
+
+    # Deleting the course should cascade across documents, chunks, topics, prerequisites, plans, items, knowledge gaps
     db_session.delete(course)
     db_session.flush()
 
@@ -484,6 +533,8 @@ def test_cascading_deletes_remove_child_records(db_session: Session) -> None:
     assert db_session.scalar(select(Topic).where(Topic.id == t1.id)) is None
     assert db_session.scalar(select(StudyPlan).where(StudyPlan.id == plan.id)) is None
     assert db_session.scalar(select(PlanItem).where(PlanItem.id == item.id)) is None
+    assert db_session.scalar(select(KnowledgeGapAnalysis).where(KnowledgeGapAnalysis.id == gap_analysis.id)) is None
+    assert db_session.scalar(select(KnowledgeGap).where(KnowledgeGap.id == gap.id)) is None
 
 
 def test_circular_prerequisite_rejected_within_same_flush(db_session: Session) -> None:
@@ -514,3 +565,8 @@ def test_alembic_autogenerate_has_no_missing_tables_or_columns(test_engine: Engi
         d for d in diffs if d[0] in {"add_table", "remove_table", "add_column", "remove_column"}
     ]
     assert structural_diffs == [], f"Unexpected schema drift: {structural_diffs}"
+
+
+if __name__ == "__main__":
+    import pytest
+    sys.exit(pytest.main([__file__, "-v"]))

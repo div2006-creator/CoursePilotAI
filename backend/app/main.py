@@ -9,6 +9,7 @@ from app.api.routes import api_router
 from app.api.routes import auth as auth_routes
 from app.api.routes import courses as course_routes
 from app.api.routes import diagnostic as diagnostic_routes
+from app.api.routes import knowledge_gaps as knowledge_gap_routes
 from app.api.routes import topics as topic_routes
 from app.config import settings
 
@@ -94,6 +95,11 @@ app.include_router(
     diagnostic_routes.router,
     prefix=settings.API_V1_STR,
     tags=["diagnostic"],
+)
+app.include_router(
+    knowledge_gap_routes.router,
+    prefix=settings.API_V1_STR,
+    tags=["knowledge_gaps"],
 )
 
 

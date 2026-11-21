@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import {
   ArrowLeft,
+  BrainCircuit,
   Check,
   CheckCircle2,
   Clock,
@@ -150,6 +151,14 @@ export const DiagnosticResult: React.FC = () => {
           >
             <RotateCcw className="w-3.5 h-3.5" />
             <span>Retake Diagnostic</span>
+          </Link>
+
+          <Link
+            to={`/courses/${courseId}/knowledge-gaps`}
+            className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 transition-colors shadow-sm"
+          >
+            <BrainCircuit className="w-3.5 h-3.5" />
+            <span>Analyze Knowledge Gaps</span>
           </Link>
 
           <Link

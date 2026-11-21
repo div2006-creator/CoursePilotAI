@@ -16,6 +16,7 @@ import { Diagnostic } from './pages/Diagnostic';
 import { DiagnosticResult } from './pages/DiagnosticResult';
 import { Topics } from './pages/Topics';
 import { KnowledgeGraph } from './pages/KnowledgeGraph';
+import { KnowledgeGaps } from './pages/KnowledgeGaps';
 import { TutorPage } from './pages/TutorPage';
 import { StudyPlanPage } from './pages/StudyPlanPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
@@ -54,6 +55,7 @@ export const App: React.FC = () => {
             <Route path="/courses/:courseId/diagnostic/:sessionId/result" element={<DiagnosticResult />} />
             <Route path="/courses/:courseId/topics" element={<Topics />} />
             <Route path="/courses/:courseId/graph" element={<KnowledgeGraph />} />
+            <Route path="/courses/:courseId/knowledge-gaps" element={<KnowledgeGaps />} />
             <Route path="/tutor" element={<TutorPage />} />
             <Route path="/study-plan" element={<StudyPlanPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
