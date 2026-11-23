@@ -1,3 +1,9 @@
-// Dashboard components placeholder
-export {};
-
+export { LearningOverview } from './LearningOverview';
+export { MasteryDistribution } from './MasteryDistribution';
+export { LearningProgressChart } from './LearningProgressChart';
+export { TopicMasteryTable } from './TopicMasteryTable';
+export { ImprovementComparison } from './ImprovementComparison';
+export { ExamReadinessCard } from './ExamReadinessCard';
+export { StudyConsistency } from './StudyConsistency';
+export { BottleneckCard } from './BottleneckCard';
+export { RecommendationList } from './RecommendationList';

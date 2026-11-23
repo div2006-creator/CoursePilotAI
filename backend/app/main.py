@@ -9,8 +9,12 @@ from app.api.routes import api_router
 from app.api.routes import auth as auth_routes
 from app.api.routes import courses as course_routes
 from app.api.routes import diagnostic as diagnostic_routes
+from app.api.routes import documents as document_routes
 from app.api.routes import knowledge_gaps as knowledge_gap_routes
+from app.api.routes import study_plans as study_plan_routes
 from app.api.routes import topics as topic_routes
+from app.api.routes import tutor as tutor_routes
+from app.api.routes import analytics as analytics_routes
 from app.config import settings
 
 
@@ -87,6 +91,11 @@ app.include_router(
     tags=["courses"],
 )
 app.include_router(
+    document_routes.router,
+    prefix=settings.API_V1_STR,
+    tags=["documents"],
+)
+app.include_router(
     topic_routes.router,
     prefix=settings.API_V1_STR,
     tags=["topics"],
@@ -100,6 +109,21 @@ app.include_router(
     knowledge_gap_routes.router,
     prefix=settings.API_V1_STR,
     tags=["knowledge_gaps"],
+)
+app.include_router(
+    study_plan_routes.router,
+    prefix=settings.API_V1_STR,
+    tags=["study_plans"],
+)
+app.include_router(
+    tutor_routes.router,
+    prefix=settings.API_V1_STR,
+    tags=["tutor"],
+)
+app.include_router(
+    analytics_routes.router,
+    prefix=settings.API_V1_STR,
+    tags=["analytics"],
 )
 
 

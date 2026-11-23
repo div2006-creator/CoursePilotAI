@@ -11,9 +11,10 @@ CoursePilot AI analyzes computer science course syllabi, extracts concept prereq
 - **Syllabus & Course Ingestion**: Parses university course syllabi and lecture slides (PDFs) to extract hierarchical topics and learning objectives.
 - **Prerequisite Knowledge Graph**: Maps topics into a Directed Acyclic Graph (DAG) capturing dependency chains (e.g., Recursion $\rightarrow$ Trees $\rightarrow$ Graphs $\rightarrow$ Dynamic Programming).
 - **Diagnostic Gap Identification**: Generates adaptive diagnostic quizzes to identify prerequisite deficiencies and calibrate topic mastery.
-- **Personalized Recovery Study Plans**: Synthesizes time-bound, milestone-driven study roadmaps prioritizing foundational gaps before advanced topics.
-- **Grounded AI Tutor (RAG)**: Context-aware interactive tutor powered by local LLMs (Ollama / Qwen Instruct) and pgvector semantic retrieval.
-- **Mastery Analytics**: Interactive radar and progress charts tracking continuous mastery evolution.
+- **Knowledge Gap Analysis & Prerequisite Intelligence**: Graph traversal distinguishing root prerequisite failures from isolated topic struggles.
+- **Adaptive Learning Planner**: Synthesizes time-bound, prerequisite-respecting study roadmaps prioritizing foundational gaps before advanced topics, with dynamic replanning and rolling exam schedules (see [Learning Planner](docs/LEARNING_PLANNER.md)).
+- **Personalized AI Tutor**: 1-on-1 pedagogical tutor guided by a Socratic state machine (`DIAGNOSIS` $\rightarrow$ `EXPLANATION` $\rightarrow$ `EXAMPLE` $\rightarrow$ `PRACTICE` $\rightarrow$ `VERIFICATION` $\rightarrow$ `COMPLETED`), grounded in uploaded syllabus chunks with exact citations (`Source: Unit 3, Page 12`), multi-language explanations (`English`, `Hindi`, `Hinglish`), progressive hints, and deterministic mastery updates (see [AI Tutor](docs/AI_TUTOR.md)).
+- **Learning Analytics & Adaptive Progress Intelligence**: 100% deterministic, explainable progress tracking that compares initial diagnostic baselines against *fresh* assessment attempts (strictly excluding duplicate questions to verify true concept retention), tracks longitudinal mastery velocity and milestone graduations, computes a transparent 5-component Exam Readiness Score with a 40% coverage reliability threshold, calculates honest calendar-day streaks, and detects foundational prerequisite bottlenecks (see [Learning Analytics](docs/LEARNING_ANALYTICS.md)).
 
 ---
 
@@ -112,6 +113,8 @@ coursepilot-ai/
 ├── docs/                         # Technical documentation
 │   ├── architecture.md           # System design & architecture details
 │   ├── api.md                    # REST API endpoint specifications
+│   ├── LEARNING_PLANNER.md       # Adaptive study planner documentation
+│   ├── AI_TUTOR.md               # Socratic Personalized AI Tutor documentation
 │   └── evaluation.md             # AI evaluation metrics & benchmark plan
 │
 ├── docker-compose.yml            # PostgreSQL 16 + pgvector container config

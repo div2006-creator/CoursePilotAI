@@ -75,6 +75,12 @@ def trigger_knowledge_gap_analysis_endpoint(
     status_code=status.HTTP_200_OK,
     summary="Get latest knowledge gap analysis for a course",
 )
+@router.get(
+    "/courses/{course_id}/knowledge-gaps/summary",
+    response_model=KnowledgeGapAnalysisResponse,
+    status_code=status.HTTP_200_OK,
+    include_in_schema=False,
+)
 def get_latest_knowledge_gaps_endpoint(
     course_id: uuid.UUID,
     db: Session = Depends(get_db),

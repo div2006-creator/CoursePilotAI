@@ -24,6 +24,7 @@ import {
   getExamCountdownText,
 } from '../utils/courseFormatters';
 import { CourseFormModal } from '../components/course';
+import { OnboardingGuide } from '../components/common/OnboardingGuide';
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth();
@@ -159,6 +160,8 @@ export const Dashboard: React.FC = () => {
         </div>
       ) : (
         <>
+          <OnboardingGuide courses={courses} />
+
           <section className="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-5">
               <div className="flex items-center justify-between">
@@ -304,6 +307,19 @@ export const Dashboard: React.FC = () => {
                             >
                               <BrainCircuit className="w-3 h-3 text-indigo-600" />
                               <span>Gaps</span>
+                            </button>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                navigate(`/courses/${course.id}/study-plan`);
+                              }}
+                              className="inline-flex items-center space-x-1 px-2 py-0.5 rounded text-[11px] font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition-colors"
+                              title="View Adaptive Study Plan"
+                            >
+                              <Calendar className="w-3 h-3 text-purple-600" />
+                              <span>Plan</span>
                             </button>
                           </div>
                         </Link>

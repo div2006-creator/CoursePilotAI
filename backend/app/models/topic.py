@@ -27,7 +27,9 @@ if TYPE_CHECKING:
     from app.models.plan_item import PlanItem
     from app.models.question import Question
     from app.models.topic_mastery import TopicMastery
+    from app.models.topic_mastery_history import TopicMasteryHistory
     from app.models.topic_prerequisite import TopicPrerequisite
+    from app.models.tutor_session import TutorSession
 
 
 class Topic(Base):
@@ -154,6 +156,18 @@ class Topic(Base):
     )
     plan_items: Mapped[list[PlanItem]] = relationship(
         "PlanItem",
+        back_populates="topic",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    tutor_sessions: Mapped[list[TutorSession]] = relationship(
+        "TutorSession",
+        back_populates="topic",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
+    mastery_histories: Mapped[list[TopicMasteryHistory]] = relationship(
+        "TopicMasteryHistory",
         back_populates="topic",
         cascade="all, delete-orphan",
         passive_deletes=True,

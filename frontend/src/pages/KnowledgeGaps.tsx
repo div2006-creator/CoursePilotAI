@@ -7,9 +7,11 @@ import {
   ArrowRight,
   Award,
   BrainCircuit,
+  Calendar,
   CheckCircle2,
   ChevronDown,
   ChevronRight,
+  Compass,
   History,
   Layers,
   Loader2,
@@ -701,6 +703,29 @@ export const KnowledgeGaps: React.FC = () => {
                     </div>
                   );
                 })}
+              </div>
+
+              {/* Part 9: Adaptive Study Plan Bridge CTA */}
+              <div className="mt-5 p-5 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex items-center space-x-1.5 text-xs font-bold uppercase text-indigo-700 tracking-wider">
+                    <Compass className="w-4 h-4 text-indigo-600" />
+                    <span>Adaptive Study Plan</span>
+                  </div>
+                  <h4 className="text-sm font-bold text-gray-900">
+                    Ready to resolve these prerequisite gaps?
+                  </h4>
+                  <p className="text-xs text-gray-600">
+                    Convert these prioritized recommendations into a personalized, prerequisite-respecting study schedule.
+                  </p>
+                </div>
+                <Link
+                  to={`/courses/${courseId}/study-plan`}
+                  className="inline-flex items-center space-x-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-700 shadow-xs transition-colors flex-shrink-0"
+                >
+                  <Calendar className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Generate / View Study Plan</span>
+                </Link>
               </div>
             </section>
           )}

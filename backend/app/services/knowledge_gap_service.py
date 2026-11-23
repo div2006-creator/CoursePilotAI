@@ -120,7 +120,10 @@ def get_topic_performance(
 
         if total_attempts > 0:
             accuracy = round((correct_attempts / total_attempts) * 100.0, 1)
-            last_attempt_time = max(a.created_at for a in topic_attempts)
+            last_attempt_time = max(
+                (a.created_at if a.created_at.tzinfo is not None else a.created_at.replace(tzinfo=timezone.utc))
+                for a in topic_attempts
+            )
             # Base confidence based on sample size
             if total_attempts >= MINIMUM_EVIDENCE_ATTEMPTS:
                 base_conf = 1.0

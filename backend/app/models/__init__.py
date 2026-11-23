@@ -17,11 +17,14 @@ from app.models.question import Question
 from app.models.study_plan import StudyPlan
 from app.models.topic import Topic
 from app.models.topic_mastery import TopicMastery
+from app.models.topic_mastery_history import TopicMasteryHistory
 from app.models.topic_prerequisite import (
     CircularPrerequisiteError,
     TopicPrerequisite,
     validate_no_prerequisite_cycle,
 )
+from app.models.tutor_message import TutorMessage
+from app.models.tutor_session import TutorSession
 from app.models.user import User
 
 __all__ = [
@@ -38,6 +41,7 @@ __all__ = [
     "Question",
     "Attempt",
     "TopicMastery",
+    "TopicMasteryHistory",
     "StudyPlan",
     "PlanItem",
     "AgentRun",
@@ -45,4 +49,6 @@ __all__ = [
     "DiagnosticSessionQuestion",
     "KnowledgeGapAnalysis",
     "KnowledgeGap",
+    "TutorSession",
+    "TutorMessage",
 ]

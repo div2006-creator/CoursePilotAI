@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import {
   AlertCircle,
   ArrowLeft,
+  Bot,
   CheckCircle2,
   GitFork,
   Layers,
@@ -383,6 +384,14 @@ export const Topics: React.FC = () => {
                         </div>
 
                         <div className="flex items-center space-x-2 flex-shrink-0">
+                          <Link
+                            to={`/courses/${courseId}/topics/${topic.id}/tutor`}
+                            className="inline-flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 transition-colors shadow-2xs"
+                            title="Start AI Tutor for this topic"
+                          >
+                            <Bot className="w-3.5 h-3.5" />
+                            <span>Tutor</span>
+                          </Link>
                           <button
                             type="button"
                             onClick={() => setEditingTopic(topic)}

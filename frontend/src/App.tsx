@@ -1,7 +1,6 @@
 import React from 'react';
 import {
   BrowserRouter as Router,
-  Navigate,
   Outlet,
   Route,
   Routes,
@@ -22,6 +21,7 @@ import { StudyPlanPage } from './pages/StudyPlanPage';
 import { AnalyticsPage } from './pages/AnalyticsPage';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { LandingPage } from './pages/LandingPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 
 const AuthenticatedLayout: React.FC = () => (
@@ -43,11 +43,11 @@ export const App: React.FC = () => {
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           <Route element={<AuthenticatedLayout />}>
-            <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/courses" element={<Courses />} />
             <Route path="/courses/:courseId" element={<CourseDetails />} />
@@ -56,6 +56,10 @@ export const App: React.FC = () => {
             <Route path="/courses/:courseId/topics" element={<Topics />} />
             <Route path="/courses/:courseId/graph" element={<KnowledgeGraph />} />
             <Route path="/courses/:courseId/knowledge-gaps" element={<KnowledgeGaps />} />
+            <Route path="/courses/:courseId/study-plan" element={<StudyPlanPage />} />
+            <Route path="/courses/:courseId/tutor" element={<TutorPage />} />
+            <Route path="/courses/:courseId/topics/:topicId/tutor" element={<TutorPage />} />
+            <Route path="/courses/:courseId/analytics" element={<AnalyticsPage />} />
             <Route path="/tutor" element={<TutorPage />} />
             <Route path="/study-plan" element={<StudyPlanPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />

@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   ArrowLeft,
   Award,
+  BarChart3,
   BookOpen,
   BrainCircuit,
   Calendar,
@@ -25,11 +26,13 @@ import {
 import {
   Course,
   CourseCreatePayload,
+  CourseDocument,
   CourseTopicsData,
   CourseUpdatePayload,
   DiagnosticHistoryItem,
 } from '../types';
 import { courseService } from '../services/courseService';
+import { documentService } from '../services/documentService';
 import { topicService } from '../services/topicService';
 import { getDiagnosticHistory } from '../services/diagnosticService';
 import { extractApiErrorMessage } from '../services/api';
@@ -40,7 +43,12 @@ import {
   getCourseStatusMeta,
   getExamCountdownText,
 } from '../utils/courseFormatters';
-import { CourseFormModal, DeleteCourseModal } from '../components/course';
+import {
+  CourseFormModal,
+  DeleteCourseModal,
+  DocumentList,
+  DocumentUploadModal,
+} from '../components/course';
 
 export const CourseDetails: React.FC = () => {
   const { courseId } = useParams<{ courseId: string }>();
@@ -62,6 +70,10 @@ export const CourseDetails: React.FC = () => {
 
   // Diagnostic history state
   const [diagnosticHistory, setDiagnosticHistory] = useState<DiagnosticHistoryItem[]>([]);
+
+  // Document upload state
+  const [documents, setDocuments] = useState<CourseDocument[]>([]);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
 
   const fetchCourse = useCallback(async () => {
     if (!courseId) {
@@ -91,6 +103,14 @@ export const CourseDetails: React.FC = () => {
         setDiagnosticHistory(historyRes);
       } catch {
         setDiagnosticHistory([]);
+      }
+
+      // Load uploaded syllabus documents
+      try {
+        const docsRes = await documentService.getCourseDocuments(courseId);
+        setDocuments(docsRes.data.documents);
+      } catch {
+        setDocuments([]);
       }
     } catch (error) {
       if (
@@ -377,19 +397,35 @@ export const CourseDetails: React.FC = () => {
               <div className="w-10 h-10 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
                 <FileText className="w-5 h-5" />
               </div>
-              <span className="text-xs font-medium px-2.5 py-0.5 rounded-full bg-gray-100 text-gray-600">
-                Coming Soon
+              <span
+                className={`text-xs font-medium px-2.5 py-0.5 rounded-full border ${
+                  documents.length > 0
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : 'bg-amber-50 text-amber-700 border-amber-200'
+                }`}
+              >
+                {documents.length > 0 ? `${documents.length} Uploaded` : 'Needs Syllabus'}
               </span>
             </div>
-            <h2 className="mt-4 text-base font-semibold text-gray-900">Documents</h2>
+            <h2 className="mt-4 text-base font-semibold text-gray-900">Syllabus Documents</h2>
             <p className="mt-1.5 text-sm text-gray-500 leading-relaxed">
-              Upload course syllabi, lecture notes, and textbooks here in an upcoming update to
-              power document indexing and study recommendations.
+              Upload course syllabi, lecture notes, or slides in PDF format. Text is extracted,
+              chunked, and embedded for AI topic analysis and grounded tutoring.
             </p>
           </div>
-          <p className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-400">
-            0 documents uploaded
-          </p>
+          <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+            <span className="text-xs text-gray-500">
+              {documents.length} document{documents.length === 1 ? '' : 's'} indexed
+            </span>
+            <button
+              type="button"
+              onClick={() => setIsUploadOpen(true)}
+              className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100 transition-colors"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Upload PDF</span>
+            </button>
+          </div>
         </div>
 
         <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-6 flex flex-col justify-between">
@@ -521,9 +557,33 @@ export const CourseDetails: React.FC = () => {
               <BrainCircuit className="w-3.5 h-3.5 text-indigo-600" />
               <span>Knowledge Gap Analysis & Prerequisites</span>
             </Link>
+
+            <Link
+              to={`/courses/${course.id}/study-plan`}
+              className="w-full inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-purple-700 bg-purple-50 hover:bg-purple-100 border border-purple-200 transition-colors shadow-2xs"
+            >
+              <Calendar className="w-3.5 h-3.5 text-purple-600" />
+              <span>Adaptive Study Roadmap</span>
+            </Link>
+
+            <Link
+              to={`/courses/${course.id}/analytics`}
+              className="w-full inline-flex items-center justify-center space-x-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-teal-700 bg-teal-50 hover:bg-teal-100 border border-teal-200 transition-colors shadow-2xs"
+            >
+              <BarChart3 className="w-3.5 h-3.5 text-teal-600" />
+              <span>Learning Analytics & Exam Readiness</span>
+            </Link>
           </div>
         </div>
       </section>
+
+      {/* Uploaded Course Documents & Syllabus Management */}
+      <DocumentList
+        documents={documents}
+        courseId={course.id}
+        onRefresh={() => void fetchCourse()}
+        onOpenUpload={() => setIsUploadOpen(true)}
+      />
 
       <CourseFormModal
         isOpen={isEditOpen}
@@ -537,6 +597,16 @@ export const CourseDetails: React.FC = () => {
         course={isDeleteOpen ? course : null}
         onClose={() => setIsDeleteOpen(false)}
         onConfirm={handleDeleteCourse}
+      />
+
+      <DocumentUploadModal
+        courseId={course.id}
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        onUploaded={() => {
+          void fetchCourse();
+          setNotice('Syllabus uploaded and processed successfully! You can now extract topics with AI.');
+        }}
       />
     </div>
   );

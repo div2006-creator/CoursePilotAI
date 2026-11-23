@@ -325,6 +325,46 @@ def submit_diagnostic(
     diff_breakdown = calculate_difficulty_breakdown(created_attempts, session_q_map)
     strong_topics, weak_topics = identify_strong_and_weak_topics(topic_accuracies)
 
+    # Record baseline topic mastery and historical snapshot for each assessed topic
+    try:
+        from app.models.topic_mastery import TopicMastery
+        from app.models.topic_mastery_history import TopicMasteryHistory
+
+        for acc in topic_accuracies:
+            t_id = acc.topic_id
+            acc_ratio = round(acc.accuracy_percentage / 100.0, 3)
+            tm = db.execute(
+                select(TopicMastery).where(TopicMastery.user_id == user_id, TopicMastery.topic_id == t_id)
+            ).scalar_one_or_none()
+            if not tm:
+                tm = TopicMastery(
+                    user_id=user_id,
+                    topic_id=t_id,
+                    mastery_score=acc_ratio,
+                    confidence_score=round(min(1.0, acc.total_questions / 8.0), 2),
+                    last_assessed_at=session.completed_at or utc_now(),
+                )
+                db.add(tm)
+            else:
+                tm.mastery_score = acc_ratio
+                tm.confidence_score = round(min(1.0, (acc.total_questions + 1) / 8.0), 2)
+                tm.last_assessed_at = session.completed_at or utc_now()
+
+            hist = TopicMasteryHistory(
+                user_id=user_id,
+                course_id=session.course_id,
+                topic_id=t_id,
+                mastery_score=acc_ratio,
+                confidence_score=tm.confidence_score,
+                evidence_count=acc.total_questions,
+                assessment_type="DIAGNOSTIC",
+                recorded_at=session.completed_at or utc_now(),
+            )
+            db.add(hist)
+        db.commit()
+    except Exception as exc:
+        logger.warning("Could not record baseline topic mastery snapshots: %s", exc)
+
     duration = _calculate_duration(
         sum(a.time_taken for a in created_attempts),
         session.started_at,

@@ -1,13 +1,24 @@
 from __future__ import annotations
 
-from datetime import date
-from typing import TYPE_CHECKING
+from datetime import date, datetime
+from typing import TYPE_CHECKING, Optional
 import uuid
 
-from sqlalchemy import CheckConstraint, Date, ForeignKey, Index, Integer, String, Uuid
+from sqlalchemy import (
+    CheckConstraint,
+    Date,
+    DateTime,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    String,
+    Uuid,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from app.core.database import Base
+from app.core.database import Base, utc_now
 
 if TYPE_CHECKING:
     from app.models.study_plan import StudyPlan
@@ -21,7 +32,21 @@ class PlanItem(Base):
     __table_args__ = (
         CheckConstraint("duration_minutes > 0", name="duration_minutes_positive"),
         CheckConstraint("priority >= 1", name="priority_positive"),
+        CheckConstraint(
+            "priority_score >= 0.0 AND priority_score <= 100.0",
+            name="priority_score_range",
+        ),
+        CheckConstraint("sequence_number >= 1", name="sequence_number_positive"),
+        CheckConstraint(
+            "session_type IN ('LEARN', 'PRACTICE', 'REVISION', 'ASSESSMENT')",
+            name="valid_session_type",
+        ),
+        CheckConstraint(
+            "status IN ('PENDING', 'IN_PROGRESS', 'COMPLETED', 'SKIPPED', 'pending', 'in_progress', 'completed', 'skipped')",
+            name="valid_plan_item_status",
+        ),
         Index("ix_plan_items_plan_date", "plan_id", "scheduled_date"),
+        Index("ix_plan_items_sequence", "plan_id", "sequence_number"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -49,12 +74,42 @@ class PlanItem(Base):
         default=1,
         server_default="1",
     )
+    priority_score: Mapped[float] = mapped_column(
+        Float,
+        nullable=False,
+        default=0.0,
+        server_default="0.0",
+    )
+    session_type: Mapped[str] = mapped_column(
+        String(50),
+        nullable=False,
+        default="LEARN",
+        server_default="LEARN",
+        index=True,
+    )
     status: Mapped[str] = mapped_column(
         String(50),
         nullable=False,
-        default="pending",
-        server_default="pending",
+        default="PENDING",
+        server_default="PENDING",
         index=True,
+    )
+    sequence_number: Mapped[int] = mapped_column(
+        Integer,
+        nullable=False,
+        default=1,
+        server_default="1",
+        index=True,
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True),
+        default=utc_now,
+        server_default=func.current_timestamp(),
+        nullable=False,
+    )
+    completed_at: Mapped[Optional[datetime]] = mapped_column(
+        DateTime(timezone=True),
+        nullable=True,
     )
 
     # Relationships

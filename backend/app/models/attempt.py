@@ -14,6 +14,7 @@ if TYPE_CHECKING:
     from app.models.diagnostic_session import DiagnosticSession
     from app.models.question import Question
     from app.models.topic import Topic
+    from app.models.tutor_session import TutorSession
     from app.models.user import User
 
 
@@ -26,6 +27,7 @@ class Attempt(Base):
         Index("ix_attempts_user_course", "user_id", "course_id"),
         Index("ix_attempts_user_topic", "user_id", "topic_id"),
         Index("ix_attempts_diagnostic_session", "diagnostic_session_id"),
+        Index("ix_attempts_tutor_session", "tutor_session_id"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(
@@ -63,6 +65,12 @@ class Attempt(Base):
         index=True,
         nullable=True,
     )
+    tutor_session_id: Mapped[Optional[uuid.UUID]] = mapped_column(
+        Uuid(as_uuid=True),
+        ForeignKey("tutor_sessions.id", ondelete="SET NULL"),
+        index=True,
+        nullable=True,
+    )
     selected_answer: Mapped[str] = mapped_column(Text, nullable=False)
     is_correct: Mapped[bool] = mapped_column(Boolean, nullable=False, index=True)
     time_taken: Mapped[int] = mapped_column(
@@ -86,6 +94,10 @@ class Attempt(Base):
     question: Mapped[Question] = relationship("Question", back_populates="attempts")
     diagnostic_session: Mapped[Optional[DiagnosticSession]] = relationship(
         "DiagnosticSession",
+        back_populates="attempts",
+    )
+    tutor_session: Mapped[Optional[TutorSession]] = relationship(
+        "TutorSession",
         back_populates="attempts",
     )
 
