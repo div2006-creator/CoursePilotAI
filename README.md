@@ -2,7 +2,7 @@
 
 > **AI-Powered Personalized Learning Recovery Platform for Data Structures & Algorithms (DSA)**
 
-CoursePilot AI analyzes computer science course syllabi, extracts concept prerequisite relationships into a dependency graph, pinpoints learning gaps using adaptive diagnostic assessments, generates personalized recovery study plans, and offers a grounded RAG-powered AI tutor.
+CoursePilot AI analyzes computer science course syllabus, extracts concept prerequisite relationships into a dependency graph, pinpoints learning gaps using adaptive diagnostic assessments, generates personalized recovery study plans, and offers a grounded RAG-powered AI tutor.
 
 ---
 
